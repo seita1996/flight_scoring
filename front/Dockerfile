@@ -1,6 +1,6 @@
 FROM node:14.17.0-alpine
 
-ENV HOME="/app" \
+ENV HOME="/front" \
     LANG=C.UTF-8 \
     TZ=Asia/Tokyo
 

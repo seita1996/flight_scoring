@@ -4,7 +4,7 @@ FROM ruby:2.6.3-alpine3.10
 # 必要パッケージのダウンロード
 ENV RUNTIME_PACKAGES="linux-headers libxml2-dev make gcc libc-dev nodejs tzdata mysql-dev mysql-client yarn" \
     DEV_PACKAGES="build-base curl-dev" \
-    HOME="/app" \
+    HOME="/back" \
     LANG=C.UTF-8 \
     TZ=Asia/Tokyo
 

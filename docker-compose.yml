@@ -16,7 +16,7 @@ services:
     env_file:
       - ./back/environments/db.env
     volumes:
-      - ./back:/app:cached
+      - ./back:/back:cached
     depends_on:
       - db
     # ホストコンピュータのポート：Docker内のポート
@@ -27,7 +27,7 @@ services:
     build: front/
     command: yarn run dev
     volumes:
-      - ./front:/app:cached
+      - ./front:/front:cached
     ports:
       # ホストコンピュータのポート：Docker内のポート
       - 8080:3000
