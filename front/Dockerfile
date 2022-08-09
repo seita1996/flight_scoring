@@ -14,8 +14,6 @@ RUN apk update && \
     yarn install &&\
     rm -rf /var/cache/apk/*
 
-# あとから外します(ECS使うとき)
-
 #RUN yarn run build
 #EXPOSE 3000
 #CMD ["yarn", "dev"]

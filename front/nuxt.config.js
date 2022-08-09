@@ -42,7 +42,6 @@ export default {
   */
   modules: [
     '@nuxtjs/axios',
-    '@nuxtjs/proxy',
     '@nuxtjs/pwa',
     '@nuxtjs/dotenv',
   ],
@@ -51,11 +50,7 @@ export default {
   ** See https://axios.nuxtjs.org/options
   */
   axios: {
-  },
-  proxy: {
-    '/back': {
-      target: 'http://localhost:3000/'
-    }
+    proxy: true
   },
   /*
   ** vuetify module configuration
@@ -76,6 +71,12 @@ export default {
           success: colors.green.accent3
         }
       }
+    }
+  },
+  watchers: {
+    webpack: {
+      poll: true,
+      ignored: /node_modules/ // 監視から除外
     }
   },
   /*
