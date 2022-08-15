@@ -1,1 +1,33 @@
 inherit_from: .rubocop_todo.yml
+
+inherit_mode:
+  merge:
+    - Exclude
+
+require:
+  - rubocop-performance
+  - rubocop-rails
+
+Bundler:
+  Enabled: true
+
+Gemspec:
+  Enabled: true
+
+Lint:
+  Enabled: true
+
+Rails:
+  Enabled: true
+
+Performance:
+  Enabled: true
+
+Security:
+  Enabled: true
+
+Style/Documentation:
+  Enabled: false
+
+AllCops:
+  NewCops: enable
