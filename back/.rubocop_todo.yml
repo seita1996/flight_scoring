@@ -6,7 +6,6 @@
 # Note that changes in the inspected code, or installation of new
 # versions of RuboCop, may require this file to be generated again.
 
-# Offense count: 1
 # This cop supports safe autocorrection (--autocorrect).
 # Configuration parameters: EnforcedStyle, IndentationWidth.
 # SupportedStyles: with_first_argument, with_fixed_indentation
@@ -14,40 +13,33 @@ Layout/ArgumentAlignment:
   Exclude:
     - 'config/initializers/cors.rb'
 
-# Offense count: 39
 # Configuration parameters: EnforcedStyle.
 # SupportedStyles: native, lf, crlf
 Layout/EndOfLine:
   Enabled: false
 
-# Offense count: 1
 # Configuration parameters: AllowedMethods, AllowedPatterns, IgnoredMethods, CountRepeatedAttributes.
 Metrics/AbcSize:
   Max: 18
 
-# Offense count: 1
 # Configuration parameters: AllowedMethods, AllowedPatterns, IgnoredMethods.
 Metrics/CyclomaticComplexity:
   Max: 10
 
-# Offense count: 2
 # Configuration parameters: CountComments, CountAsOne, ExcludedMethods, AllowedMethods, AllowedPatterns, IgnoredMethods.
 Metrics/MethodLength:
   Max: 13
 
-# Offense count: 1
 # Configuration parameters: AllowedMethods, AllowedPatterns, IgnoredMethods.
 Metrics/PerceivedComplexity:
   Max: 10
 
-# Offense count: 38
 # This cop supports unsafe autocorrection (--autocorrect-all).
 # Configuration parameters: EnforcedStyle.
 # SupportedStyles: always, always_true, never
 Style/FrozenStringLiteralComment:
   Enabled: false
 
-# Offense count: 4
 # This cop supports safe autocorrection (--autocorrect).
 # Configuration parameters: .
 # SupportedStyles: percent, brackets
@@ -55,9 +47,8 @@ Style/SymbolArray:
   EnforcedStyle: percent
   MinSize: 10
 
-# Offense count: 2
 # This cop supports safe autocorrection (--autocorrect).
 # Configuration parameters: AllowHeredoc, AllowURI, URISchemes, IgnoreCopDirectives, AllowedPatterns, IgnoredPatterns.
 # URISchemes: http, https
 Layout/LineLength:
-  Max: 190
+  Max: 120
