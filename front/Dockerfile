@@ -1,4 +1,4 @@
-FROM node:14.17.0-alpine
+FROM node:12.5.0-alpine
 
 ENV HOME="/front" \
     LANG=C.UTF-8 \
@@ -13,7 +13,3 @@ RUN apk update && \
     npm install -g n && \
     yarn install &&\
     rm -rf /var/cache/apk/*
-
-#RUN yarn run build
-#EXPOSE 3000
-#CMD ["yarn", "dev"]

@@ -1,6 +1,6 @@
-# flight_scoring
+# flight_scoring_system
 
-> HAB competition flight scoring system
+> HAB competition flight scoring system.
 
 ## Build Setup
 
