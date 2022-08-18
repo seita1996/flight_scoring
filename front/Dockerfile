@@ -1,4 +1,4 @@
-FROM node:12.5.0-alpine
+FROM node:14.20-alpine
 
 ENV HOME="/front" \
     LANG=C.UTF-8 \
