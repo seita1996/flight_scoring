@@ -17,6 +17,10 @@ frontコンテナを起動
 ```
 $ docker-compose up -d
 ```
+パッケージのインストール
+```
+$ docker-compose run --rm front yarn
+```
 nuxt.jsアプリにアクセス
 ```
 http://localhost:8080/

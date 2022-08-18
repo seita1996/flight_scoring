@@ -1,7 +1,7 @@
 import colors from 'vuetify/es5/util/colors'
 
 export default {
-  mode: 'universal',
+  mode: 'spa',
   /*
   ** Headers of the page
   */
@@ -41,8 +41,9 @@ export default {
   ** Nuxt.js modules
   */
   modules: [
+    // Doc: https://axios.nuxtjs.org/usage
     '@nuxtjs/axios',
-    '@nuxtjs/pwa',
+    // Doc: https://github.com/nuxt-community/dotenv-module
     '@nuxtjs/dotenv',
   ],
   /*
@@ -50,7 +51,6 @@ export default {
   ** See https://axios.nuxtjs.org/options
   */
   axios: {
-    proxy: true
   },
   /*
   ** vuetify module configuration
@@ -73,12 +73,6 @@ export default {
       }
     }
   },
-  watchers: {
-    webpack: {
-      poll: true,
-      ignored: /node_modules/ // 監視から除外
-    }
-  },
   /*
   ** Build configuration
   */
@@ -87,6 +81,12 @@ export default {
     ** You can extend webpack config here
     */
     extend (config, ctx) {
+    }
+  },
+  watchers: {
+    webpack: {
+      poll: true,
+      ignored: /node_modules/ // 監視から除外
     }
   }
 }
