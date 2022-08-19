@@ -3666,21 +3666,13 @@ eslint-plugin-vue@^8.7.1:
     semver "^7.3.5"
     vue-eslint-parser "^8.0.1"
 
-eslint-scope@^4.0.3:
+eslint-scope@^4.0.3, eslint-scope@^7.0.0, eslint-scope@^7.1.1:
   version "4.0.3"
   resolved "https://registry.yarnpkg.com/eslint-scope/-/eslint-scope-4.0.3.tgz#ca03833310f6889a3264781aa82e63eb9cfe7848"
   integrity sha512-p7VutNr1O/QrxysMo3E45FjYDTeXBy0iTltPFNSqKAIfjDSXC+4dj+qfyuD8bfAXrW/y6lW3O76VaYNPKfpKrg==
   dependencies:
     esrecurse "^4.1.0"
     estraverse "^4.1.1"
-
-eslint-scope@^7.0.0, eslint-scope@^7.1.1:
-  version "7.1.1"
-  resolved "https://registry.yarnpkg.com/eslint-scope/-/eslint-scope-7.1.1.tgz#fff34894c2f65e5226d3041ac480b4513a163642"
-  integrity sha512-QKQM/UXpIiHcLqJ5AOyIW7XZmzjkzQXYE54n1++wb0u9V/abW3l9uQnxX8Z5Xd18xyKIMTUAyQ0k1e8pz6LUrw==
-  dependencies:
-    esrecurse "^4.3.0"
-    estraverse "^5.2.0"
 
 eslint-utils@^2.0.0:
   version "2.1.0"
@@ -3789,7 +3781,7 @@ esquery@^1.4.0:
   dependencies:
     estraverse "^5.1.0"
 
-esrecurse@^4.1.0, esrecurse@^4.3.0:
+esrecurse@^4.1.0:
   version "4.3.0"
   resolved "https://registry.yarnpkg.com/esrecurse/-/esrecurse-4.3.0.tgz#7ad7964d679abb28bee72cec63758b1c5d2c9921"
   integrity sha512-KmfKL3b6G+RXvP8N1vr3Tq1kL/oCFgn2NYXEtqP8/L3pKapUA4G8cFVaoF3SU323CD4XypR/ffioHmkti6/Tag==
