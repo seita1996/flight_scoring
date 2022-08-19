@@ -1,6 +1,6 @@
 # This class is hot air balloon competition class.
 class EventsController < ApplicationController
-  before_action :set_event, only: [:show, :update, :destroy]
+  before_action :set_event, only: %i[show update destroy]
 
   def index
     @events = Event.all
