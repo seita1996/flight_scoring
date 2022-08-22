@@ -5,7 +5,7 @@ v-main
       v-text-field(v-model="name" label="Username" prepend-icon="" type="text")
       v-btn(color="primary" @click="createUser") 登録
     v-col(cols="12")
-      h1 Hello, Qiita!1
+      h1 Hello, Qiita!
   v-card(class="mx-auto" max-width="300" tile)
     v-list(rounded)
       v-subheader USERS

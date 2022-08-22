@@ -42,13 +42,13 @@ export default {
       items: [
         {
           icon: 'mdi-apps',
-          title: 'Welcome',
-          to: '/'
+          title: '大会一覧',
+          to: '/events'
         },
         {
           icon: 'mdi-chart-bubble',
-          title: 'Inspire',
-          to: '/inspire'
+          title: '設定',
+          to: '/task_types'
         }
       ],
       miniVariant: false,
