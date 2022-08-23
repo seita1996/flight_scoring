@@ -14,7 +14,6 @@ v-row
 export default {
   data: () => ({
     dates: [],
-    // date: (new Date(Date.now() - (new Date()).getTimezoneOffset() * 60000)).toISOString().substr(0, 10),
     menu: false,
     modal: false,
     menu2: false
