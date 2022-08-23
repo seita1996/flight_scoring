@@ -2,8 +2,7 @@
 v-container
   v-row(align="center" justify="center")
     v-col(cols="12")
-      v-text-field(label="大会名" v-model="name" prepend-icon="" type="text")
-      v-btn(color="primary" @click="createEvent") 大会登録
+      v-btn(color="primary" @click="moveEventNew") 大会登録
     v-col(cols="12")
         h1 大会一覧
   v-card(class="mx-auto" max-width="300" tile)
@@ -39,6 +38,9 @@ export default {
           this.events.push(res.data)
         }
       })
+    },
+    moveEventNew () {
+      this.$router.push('/events/new')
     }
   }
 }
