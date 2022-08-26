@@ -6,7 +6,7 @@ v-container
   v-row(align="center" justify="center")
     v-col(cols="12")
       v-text-field(label="イベントディレクター名" v-model="director" prepend-icon="" type="text")
-  DateRangePicker
+  DateRangePicker(@updateDates="updateDates")
   v-btn(@click="moveEvent") 戻る
   v-btn.pull-right(color="primary" @click="createEvent") 大会登録
 </template>
@@ -22,18 +22,22 @@ export default {
   data () {
     return {
       name: '',
-      director: ''
+      director: '',
+      dates: []
     }
   },
   methods: {
     createEvent () {
       const self = this
-      axios.post('/events', { name: this.name, director: this.director }).then((res) => {
+      axios.post('/events', { name: this.name, director: this.director, start_term: this.dates[0], end_term: this.dates[1] }).then((res) => {
         self.$router.push('/events')
       })
     },
     moveEvent () {
       this.$router.push('/events')
+    },
+    updateDates (dates) {
+      this.dates = dates
     }
   }
 }

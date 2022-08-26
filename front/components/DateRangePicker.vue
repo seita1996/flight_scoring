@@ -7,7 +7,7 @@ v-row
       v-date-picker(v-model="dates" range no-title scrollable)
         v-spacer
         v-btn(text color="primary" @click="menu = false") Cancel
-        v-btn(text color="primary" @click="$refs.menu.save(dates)") OK
+        v-btn(text color="primary" @click="updateDates") OK
 </template>
 
 <script>
@@ -18,9 +18,10 @@ export default {
     modal: false,
     menu2: false
   }),
-  computed: {
-    dateRangeText () {
-      return this.dates.join(' ~ ')
+  methods: {
+    updateDates () {
+      this.$refs.menu.save(this.dates)
+      this.$emit('updateDates', this.dates)
     }
   }
 }
