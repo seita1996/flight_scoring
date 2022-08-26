@@ -26,11 +26,22 @@ export default {
       dates: []
     }
   },
+  notifications: {
+    toast: {
+      type: 'success',
+      message: 'test message'
+    }
+  },
   methods: {
     createEvent () {
       const self = this
       axios.post('/events', { name: this.name, director: this.director, start_term: this.dates[0], end_term: this.dates[1] }).then((res) => {
         self.$router.push('/events')
+        self.toast({
+          type: 'success',
+          message: '登録が完了しました',
+          timeout: 2000
+        })
       })
     },
     moveEvent () {

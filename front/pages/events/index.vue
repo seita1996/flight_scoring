@@ -32,13 +32,6 @@ export default {
     })
   },
   methods: {
-    createEvent () {
-      axios.post('/events', { name: this.name, director: 'Deff' }).then((res) => {
-        if (res.data) {
-          this.events.push(res.data)
-        }
-      })
-    },
     moveEventNew () {
       this.$router.push('/events/new')
     }
