@@ -15,9 +15,11 @@
   "dependencies": {
     "@nuxtjs/axios": "^5.13.6",
     "@nuxtjs/dotenv": "^1.4.0",
+    "mini-toastr": "^0.8.1",
     "nuxt": "^2.0.0",
     "pug": "^3.0.2",
-    "pug-plain-loader": "^1.1.0"
+    "pug-plain-loader": "^1.1.0",
+    "vue-notifications": "^1.0.2"
   },
   "devDependencies": {
     "@nuxtjs/eslint-config": "^10.0.0",
