@@ -2,16 +2,8 @@
 v-container
   v-row(align="center" justify="center")
     v-col(cols="12")
-      v-btn(color="primary" @click="moveEventNew") 大会登録
-    v-col(cols="12")
-        h1 大会一覧
-  v-card(class="mx-auto" max-width="300" tile)
-    v-list(rounded)
-      v-subheader EVENTS
-      v-list-item-group(color="primary")
-        v-list-item(v-for="event in events" :key="event.id" @click="")
-          v-list-item-content
-            v-list-item-title(v-text="event.name")
+      v-btn.pull-right(color="primary" @click="moveEventNew") 大会登録
+  v-data-table(:headers="fields" :items="events" :items-per-page="5" class="elevation-1")
 </template>
 
 <script>
@@ -21,7 +13,13 @@ export default {
   data () {
     return {
       name: '',
-      events: []
+      events: [],
+      fields: [
+        { text: '大会名', value: 'name' },
+        { text: 'イベントディレクター', value: 'director' },
+        { text: '開催期間(start)', value: 'start_term' },
+        { text: '開催期間(end)', value: 'end_term' }
+      ]
     }
   },
   created () {
@@ -38,3 +36,10 @@ export default {
   }
 }
 </script>
+
+<style>
+.pull-right {
+  float: right;
+  margin-bottom: 10px;
+}
+</style>

@@ -34,8 +34,10 @@ export default {
   },
   methods: {
     createEvent () {
+      const startTerm = new Date(this.dates[0].replace('-', '/'))
+      const endTerm = new Date(this.dates[1].replace('-', '/'))
       const self = this
-      axios.post('/events', { name: this.name, director: this.director, start_term: this.dates[0], end_term: this.dates[1] }).then((res) => {
+      axios.post('/events', { name: this.name, director: this.director, start_term: startTerm, end_term: endTerm }).then((res) => {
         self.$router.push('/events')
         self.toast({
           type: 'success',
