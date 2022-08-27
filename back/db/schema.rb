@@ -14,8 +14,8 @@ ActiveRecord::Schema[7.0].define(version: 2022_08_22_145512) do
   create_table "events", charset: "utf8mb4", force: :cascade do |t|
     t.string "name", null: false
     t.string "director"
-    t.date "start_term"
-    t.date "end_term"
+    t.datetime "start_term", precision: nil
+    t.datetime "end_term", precision: nil
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
