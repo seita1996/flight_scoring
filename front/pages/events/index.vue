@@ -17,21 +17,31 @@ export default {
       fields: [
         { text: '大会名', value: 'name' },
         { text: 'イベントディレクター', value: 'director' },
-        { text: '開催期間(start)', value: 'start_term' },
-        { text: '開催期間(end)', value: 'end_term' }
+        { text: '開催期間(start)', value: 'start_day' },
+        { text: '開催期間(end)', value: 'end_day' }
       ]
     }
   },
   created () {
     axios.get('/events').then((res) => {
       if (res.data) {
-        this.events = res.data
+        const events = res.data
+        events.forEach((event) => {
+          event.start_day = this.getFormatDate(event.start_term)
+          event.end_day = this.getFormatDate(event.end_term)
+        })
+        this.events = events
       }
     })
   },
   methods: {
     moveEventNew () {
       this.$router.push('/events/new')
+    },
+    // 年月日形式に変換
+    getFormatDate (datetime) {
+      const date = new Date(Date.parse(datetime))
+      return date.getFullYear() + '/' + (date.getMonth() + 1) + '/' + date.getDate()
     }
   }
 }
