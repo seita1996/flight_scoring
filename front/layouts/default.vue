@@ -35,6 +35,11 @@ export default {
           icon: 'mdi-chart-bubble',
           title: '設定',
           to: '/task_types'
+        },
+        {
+          icon: 'mdi-google-maps',
+          title: 'エリア管理',
+          to: '/areas'
         }
       ],
       miniVariant: false,
