@@ -1,5 +1,6 @@
 Rails.application.routes.draw do
   resources :areas
+  resources :pzs
   resources :users
   resources :events
   resources :task_types

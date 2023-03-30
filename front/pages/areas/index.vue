@@ -5,7 +5,7 @@ v-container
       v-btn.pull-right(color="primary" @click="moveAreaNew") エリア登録
   v-data-table(:headers="fields" :items="areas" :items-per-page="5" class="elevation-1")
     template(v-slot:[`item.name`]="{ item }")
-      a(@click="moveEventPage(item.id)") {{ item.name }}
+      a(@click="moveAreaPage(item.id)") {{ item.name }}
 </template>
 
 <script>
@@ -25,12 +25,7 @@ export default {
   created () {
     axios.get('/areas').then((res) => {
       if (res.data) {
-        const areas = res.data
-        areas.forEach((event) => {
-          event.start_day = this.getFormatDate(event.start_term)
-          event.end_day = this.getFormatDate(event.end_term)
-        })
-        this.areas = areas
+        this.areas = res.data
       }
     })
   },
@@ -38,7 +33,7 @@ export default {
     moveAreaNew () {
       this.$router.push('/areas/new')
     },
-    moveEventPage (id) {
+    moveAreaPage (id) {
       // this.$router.push({ path: `/areas/${id}` })
       this.$router.push({ name: 'areas-id', params: { id } })
     }
