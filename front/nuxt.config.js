@@ -3,7 +3,8 @@ import colors from 'vuetify/es5/util/colors'
 export default {
   mode: 'spa',
   publicRuntimeConfig: {
-    mapsApiKey: process.env.MAPS_API_KEY
+    mapsApiKey: process.env.MAPS_API_KEY,
+    mapsId: process.env.MAPS_ID
   },
   /*
   ** Headers of the page
