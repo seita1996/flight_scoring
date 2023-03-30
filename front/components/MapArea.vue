@@ -1,13 +1,12 @@
 <template lang="pug">
 v-sheet(id="map" class="pa-0" :light="true" style="width: 100%; height: 300px;")
-  googlemap
 </template>
 
 <script>
 import { Loader } from '@googlemaps/js-api-loader'
 
 export default {
-  name: 'HelloWorld',
+  name: 'GoogleMap',
   data: function () {
     return {
       map: null,
@@ -16,7 +15,7 @@ export default {
   },
   mounted: function () {
     new Loader({
-      apiKey: 'AIzaSyCujDc6RifTihhYhIYJ6aGgyBFb42bNNIo',
+      apiKey: this.$config.mapsApiKey,
       version: 'frozen',
       libraries: ['places', 'drawing', 'geometry', 'visualization'],
       language: 'ja'
@@ -38,6 +37,8 @@ export default {
           position: google.maps.ControlPosition.LEFT_BOTTOM
         },
         scaleControl: true
+        // 3dビューを有効にする
+        // mapTypeId: 'satellite'
       })
       // こちらにレスポンスとして受け取ったgoogleやthis.mapを使用すれば、
       // 通常通りvueでもJavaScriptAPIを利用できます
@@ -47,46 +48,3 @@ export default {
   }
 }
 </script>
-<!-- <template lang="pug">
-div(id="map")
-</template>
-
-<script>
-import MapJs from './map'
-
-export default {
-  data () {
-    return {
-    }
-  },
-  mounted () {
-    // 佐賀県佐賀市の緯度経度を指定
-    // this.map = L.map(this.$refs.map).setView([35.681236, 139.767125], 13)
-
-    // GoogleMapsJavascriptAPIの読み込み
-    // const script = document.createElement('script')
-    // script.src = 'https://maps.googleapis.com/maps/api/js?key=AIzaSyCujDc6RifTihhYhIYJ6aGgyBFb42bNNIo'
-    // script.defer = true
-    // script.async = true
-  },
-  methods: {
-    initMap () {
-      // マップを表示する要素を取得
-      const mapElement = document.getElementById('map')
-
-      // 地図の初期位置を設定
-      const initialPosition = { lat: 35.681236, lng: 139.767125 }
-
-      // 地図を生成
-      const map = new google.maps.Map(mapElement, {
-        center: initialPosition,
-        zoom: 15,
-      })
-    }
-
-  }
-}
-</script>
-
-<style scoped>
-</style> -->
