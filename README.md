@@ -12,15 +12,12 @@ imageのビルド
 $ docker-compose build
 ```
 
+### コンテナ起動及びパッケージインストールのバッチを実行
+```
+$ sh setup.sh
+```
+
 ### front側対応
-frontコンテナを起動
-```
-$ docker-compose up -d
-```
-パッケージのインストール
-```
-$ docker-compose run --rm front yarn
-```
 nuxt.jsアプリにアクセス
 ```
 http://localhost:8080/

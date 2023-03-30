@@ -2,6 +2,9 @@ import colors from 'vuetify/es5/util/colors'
 
 export default {
   mode: 'spa',
+  publicRuntimeConfig: {
+    mapsApiKey: process.env.MAPS_API_KEY
+  },
   /*
   ** Headers of the page
   */
