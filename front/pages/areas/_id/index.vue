@@ -24,6 +24,8 @@ export default {
       fields: [
         { text: 'PZ名', value: 'name' },
         { text: '種類', value: 'type' },
+        { text: '緯度', value: 'longitude' },
+        { text: '経度', value: 'latitude' },
         { text: '半径', value: 'radius' },
         { text: '高度', value: 'altitude' }
       ]
