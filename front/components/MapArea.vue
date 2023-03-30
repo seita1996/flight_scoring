@@ -1,5 +1,5 @@
 <template lang="pug">
-v-sheet(id="map" class="pa-0" :light="true" style="width: 100%; height: 300px;")
+v-sheet(id="map" class="pa-0" :light="true" style="width: 100%; height: 500px;")
 </template>
 
 <script>
@@ -24,8 +24,11 @@ export default {
       // 地図の初期化
       this.map = new google.maps.Map(document.getElementById('map'), {
         // 初期表示設定
-        zoom: 17,
-        center: { lat: 35.692195, lng: 139.759854 },
+        tilt: 45,
+        heading: 0,
+        zoom: 14,
+        center: { lat: 36.2392835, lng: 139.6697374 },
+        mapId: this.$config.mapsId,
         fullscreenControl: false,
         mapTypeControl: false,
         streetViewControl: true,
@@ -36,9 +39,9 @@ export default {
         zoomControlOptions: {
           position: google.maps.ControlPosition.LEFT_BOTTOM
         },
-        scaleControl: true
+        scaleControl: true,
         // 3dビューを有効にする
-        // mapTypeId: 'satellite'
+        mapTypeId: 'satellite'
       })
       // こちらにレスポンスとして受け取ったgoogleやthis.mapを使用すれば、
       // 通常通りvueでもJavaScriptAPIを利用できます
