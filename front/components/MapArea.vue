@@ -24,10 +24,11 @@ export default {
       // 地図の初期化
       this.map = new google.maps.Map(document.getElementById('map'), {
         // 初期表示設定
-        tilt: 45,
+        tilt: 0,
         heading: 0,
-        zoom: 14,
-        center: { lat: 36.2392835, lng: 139.6697374 },
+        zoom: 18,
+        // 緯度: 33.244391、経度: 130.298796
+        center: { lat: 33.244391, lng: 130.298796 },
         mapId: this.$config.mapsId,
         fullscreenControl: false,
         mapTypeControl: false,

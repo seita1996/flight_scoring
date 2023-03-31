@@ -16,9 +16,7 @@ v-container
 
 <script>
 import axios from '~/plugins/axios'
-// Map.vueコンポーネントをインポート
 import Map from '~/components/MapArea.vue'
-// import Map from '~/components/map.js'
 
 export default {
   components: {
@@ -40,7 +38,7 @@ export default {
   methods: {
     createArea () {
       const self = this
-      axios.post('/areas', { name: this.name, url: this.url }).then((res) => {
+      axios.post('/areas', { name: this.name }).then((res) => {
         self.$router.push('/areas')
         self.toast({
           type: 'success',
