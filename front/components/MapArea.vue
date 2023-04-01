@@ -9,6 +9,8 @@ div
 
 <script>
 import { Loader } from '@googlemaps/js-api-loader'
+import * as THREE from 'three'
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
 
 export default {
   name: 'GoogleMap',
@@ -21,21 +23,20 @@ export default {
     }
   },
   mounted: function () {
-    new Loader({
+    const apiOptions = {
       apiKey: this.$config.mapsApiKey,
       version: 'frozen',
       libraries: ['places', 'drawing', 'geometry', 'visualization'],
       language: 'ja'
-    }).load().then((google) => {
-      this.google = google
-      // 地図の初期化
-      this.map = new google.maps.Map(document.getElementById('map'), {
+    }
+
+    const mapOptions = (google) => {
+      return {
         // 初期表示設定
-        tilt: 0,
+        tilt: 60,
         heading: 0,
-        zoom: 18,
-        // 緯度: 33.244391、経度: 130.298796
-        center: { lat: 33.244391, lng: 130.298796 },
+        zoom: 17,
+        center: { lat: 35.6594945, lng: 139.6999859 },
         mapId: this.$config.mapsId,
         fullscreenControl: false,
         mapTypeControl: false,
@@ -47,22 +48,85 @@ export default {
         zoomControlOptions: {
           position: google.maps.ControlPosition.LEFT_BOTTOM
         },
-        scaleControl: true,
+        scaleControl: true
         // 3dビューを有効にする
-        mapTypeId: 'satellite'
-      })
-      // 緯度経度を初期化
-      this.lat = this.map.getCenter().lat()
-      this.lng = this.map.getCenter().lng()
+        // mapTypeId: 'satellite'
+      }
+    }
 
-      // 常にマップの中心を画面表示
-      this.map.addListener('center_changed', () => {
-        this.lat = this.map.getCenter().lat()
-        this.lng = this.map.getCenter().lng()
+    async function initMap (self) {
+      const mapDiv = document.getElementById('map')
+      const apiLoader = new Loader(apiOptions)
+      await apiLoader.load().then((google) => {
+        self.google = google
+        // 地図の初期化
+        self.map = new google.maps.Map(mapDiv, mapOptions(google))
+        // 緯度経度を初期化
+        self.lat = self.map.getCenter().lat()
+        self.lng = self.map.getCenter().lng()
+
+        // 常にマップの中心を画面表示
+        self.map.addListener('center_changed', () => {
+          self.lat = self.map.getCenter().lat()
+          self.lng = self.map.getCenter().lng()
+        })
       })
-    }).catch((e) => {
-      console.error(e)
-    })
+      return self.map
+    }
+
+    function initWebGLOverlayView (map) {
+      let scene, renderer, camera, loader
+      const webGLOverlayView = new self.google.maps.WebGLOverlayView()
+
+      webGLOverlayView.onAdd = () => {
+        scene = new THREE.Scene()
+        camera = new THREE.PerspectiveCamera()
+        const ambientLight = new THREE.AmbientLight(0xFFFFFF, 0.75)
+        scene.add(ambientLight)
+        const directionalLight = new THREE.DirectionalLight(0xFFFFFF, 0.25)
+        directionalLight.position.set(0.5, -1, 0.5)
+        scene.add(directionalLight)
+
+        loader = new GLTFLoader()
+        // GLTFモデルを読み込み
+        const source = '/pin.gltf'
+        loader.load(
+          source,
+          (gltf) => {
+            gltf.scene.scale.set(25, 25, 25)
+            gltf.scene.rotation.x = 180 * Math.PI / 180
+            scene.add(gltf.scene)
+          }
+        )
+      }
+      webGLOverlayView.onContextRestored = ({ gl }) => {
+        renderer = new THREE.WebGLRenderer({
+          canvas: gl.canvas,
+          context: gl,
+          ...gl.getContextAttributes()
+        })
+        renderer.autoClear = false
+      }
+      webGLOverlayView.onDraw = ({ gl, transformer }) => {
+        const latLngAltitudeLiteral = {
+          lat: mapOptions(self.google).center.lat,
+          lng: mapOptions(self.google).center.lng,
+          altitude: 100
+        }
+        const matrix = transformer.fromLatLngAltitude(latLngAltitudeLiteral)
+        camera.projectionMatrix = new THREE.Matrix4().fromArray(matrix)
+        webGLOverlayView.requestRedraw()
+        renderer.render(scene, camera)
+        renderer.resetState()
+      }
+      webGLOverlayView.setMap(map)
+    }
+
+    (async () => {
+      const self = this
+      const map = await initMap(self)
+      initWebGLOverlayView(map)
+    })()
   }
 }
 </script>
