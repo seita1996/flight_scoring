@@ -6,5 +6,5 @@ class Area < ApplicationRecord
   # t.datetime "updated_at", precision: 6, null: false
   #
   # 以下は自分で追加
-  # has_many :pzs
+  has_many :pzs
 end

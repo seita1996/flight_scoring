@@ -37,6 +37,7 @@ export default {
       console.log(res.data)
       if (res.data) {
         this.name = res.data.name
+        this.pzs = res.data.pzs
       }
     })
   },

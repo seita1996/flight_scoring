@@ -10,7 +10,7 @@ class AreasController < ApplicationController
 
   # GET /areas/1
   def show
-    render json: @area
+    render json: @area, include: :pzs
   end
 
   # POST /areas
