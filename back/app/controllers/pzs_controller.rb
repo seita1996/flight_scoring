@@ -18,7 +18,7 @@ class PzsController < ApplicationController
     @pz = Pz.new(pz_params)
 
     if @pz.save
-      render json: @pz, status: :created, location: @pz
+      render json: @pz, status: :created
     else
       render json: @pz.errors, status: :unprocessable_entity
     end
@@ -36,6 +36,23 @@ class PzsController < ApplicationController
   # DELETE /pzs/1
   def destroy
     @pz.destroy
+  end
+
+  # POST /pzs/create_pz_file
+  def create_pz_file
+    blob = ActiveStorage::Blob.create_and_upload!(
+      io: params[:file].tempfile,
+      filename: params[:file].original_filename,
+      content_type: params[:file].content_type
+    )
+    @pz = Pz.last
+    @pz.file.attach(blob)
+
+    if @pz.save
+      render json: @pz, status: :created
+    else
+      render json: @pz.errors, status: :unprocessable_entity
+    end
   end
 
   private

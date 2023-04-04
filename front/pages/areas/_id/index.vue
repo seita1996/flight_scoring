@@ -46,7 +46,8 @@ export default {
       this.$router.push('/areas')
     },
     movePzNew () {
-      this.$router.push('/pzs/new')
+      const id = this.id
+      this.$router.push({ name: 'pzs-new', params: { id } })
     },
     movePzPage (id) {
       this.$router.push({ name: 'pzs-id', params: { id } })
