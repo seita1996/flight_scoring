@@ -18,7 +18,7 @@ v-container
   v-row(align="center" justify="center")
     v-col(cols="12")
       v-text-field(label="高度(m)" v-model="altitude" prepend-icon="" type="text")
-  Map
+  //- Map
   v-btn(@click="backAreaIndex") 戻る
   v-btn.pull-right(color="primary" @click="createPz") 登録
 </template>
@@ -35,6 +35,7 @@ export default {
   },
   data () {
     return {
+      id: this.$route.params.id,
       // pzモデルのカラム名
       name: '',
       type: 0,
@@ -58,20 +59,18 @@ export default {
     createPz () {
       const self = this
       // 3Dオブジェクトを生成する
+      axios.post('/pzs', { area_id: 1, name: this.name, pz_type: this.pz_type, longitude: this.longitude, latitude: this.latitude, radius: this.radius, altitude: this.altitude })
       this.exportCylinder()
-      axios.post('/pzs', { area_id: 1, name: this.name, pz_type: this.pz_type, longitude: this.longitude, latitude: this.latitude, radius: this.radius, altitude: this.altitude }).then((res) => {
-        // TODO: ファイルの保存先を/static配下にするためにサーバー側で処理を記載する
-        self.$router.push('/areas')
-        self.toast({
-          type: 'success',
-          message: '登録が完了しました',
-          timeout: 2000
-        })
+      self.$router.push('/areas')
+      self.toast({
+        type: 'success',
+        message: '登録が完了しました',
+        timeout: 2000
       })
     },
-    // 指定された3Dオブジェクトを生成し、/static配下に保存する
+    // 円柱状3Dオブジェクト(.gltf)を生成し、サーバーに送信した上で/static配下に保存する
     exportCylinder () {
-      // 変数対応にする
+      // 円柱状3Dオブジェクトの生成
       const geometry = new THREE.CylinderGeometry(this.radius, this.radius, this.altitude, 32)
       const material = new THREE.MeshBasicMaterial({
         color: 0xFF0000,
@@ -81,17 +80,42 @@ export default {
       const cylinder = new THREE.Mesh(geometry, material)
 
       // エクスポーターの作成
-      const exporter = new GLTFExporter()
+      // const exporter = new GLTFExporter()
 
-      const datetime = this.datetime().toString()
+      // const datetime = this.datetime().toString()
 
       // .gltfファイルにエクスポートする
+      // exporter.parse(cylinder, function (gltf) {
+      //   // download file
+      //   const link = document.createElement('a')
+      //   link.href = URL.createObjectURL(new Blob([JSON.stringify(gltf)], { type: 'json' }))
+      //   link.download = 'cylinder_' + datetime + '.gltf'
+      //   link.click()
+      // })
+
+      // XMLHttpRequestを使ってサーバーに送信する
+      const xhr = new XMLHttpRequest()
+      xhr.open('POST', 'http://localhost:3000/pzs/create_pz_file')
+      xhr.setRequestHeader('Content-Type', 'application/json')
+      xhr.onload = function () {
+        if (xhr.status === 200) {
+          console.log(xhr.response)
+        } else {
+          console.log('Request failed.  Returned status of ' + xhr.status)
+        }
+      }
+      // // エクスポーターの作成
+      const exporter = new GLTFExporter()
       exporter.parse(cylinder, function (gltf) {
-        // download file
-        const link = document.createElement('a')
-        link.href = URL.createObjectURL(new Blob([JSON.stringify(gltf)], { type: 'json' }))
-        link.download = 'cylinder_' + datetime + '.gltf'
-        link.click()
+        // const formData = new FormData()
+        const blob = new Blob([JSON.stringify(gltf)], { type: 'application/json' })
+        const reader = new FileReader()
+        reader.readAsArrayBuffer(blob)
+        reader.onload = function (e) {
+          // formData.append('file', e.target.result)
+          // formData.append('pz_id', 1)
+          xhr.send(e.target.result)
+        }
       })
     },
     datetime () {
