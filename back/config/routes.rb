@@ -1,6 +1,10 @@
 Rails.application.routes.draw do
   resources :areas
-  resources :pzs
+  resources :pzs do
+    collection do
+      post 'create_pz_file'
+    end
+  end
   resources :users
   resources :events
   resources :task_types

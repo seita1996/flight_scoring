@@ -79,43 +79,21 @@ export default {
       })
       const cylinder = new THREE.Mesh(geometry, material)
 
-      // エクスポーターの作成
-      // const exporter = new GLTFExporter()
-
-      // const datetime = this.datetime().toString()
-
-      // .gltfファイルにエクスポートする
-      // exporter.parse(cylinder, function (gltf) {
-      //   // download file
-      //   const link = document.createElement('a')
-      //   link.href = URL.createObjectURL(new Blob([JSON.stringify(gltf)], { type: 'json' }))
-      //   link.download = 'cylinder_' + datetime + '.gltf'
-      //   link.click()
-      // })
-
-      // XMLHttpRequestを使ってサーバーに送信する
-      const xhr = new XMLHttpRequest()
-      xhr.open('POST', 'http://localhost:3000/pzs/create_pz_file')
-      xhr.setRequestHeader('Content-Type', 'application/json')
-      xhr.onload = function () {
-        if (xhr.status === 200) {
-          console.log(xhr.response)
-        } else {
-          console.log('Request failed.  Returned status of ' + xhr.status)
-        }
-      }
-      // // エクスポーターの作成
+      // 3DオブジェクトをGLTF形式でエクスポートしてサーバーに送信する
       const exporter = new GLTFExporter()
       exporter.parse(cylinder, function (gltf) {
-        // const formData = new FormData()
         const blob = new Blob([JSON.stringify(gltf)], { type: 'application/json' })
-        const reader = new FileReader()
-        reader.readAsArrayBuffer(blob)
-        reader.onload = function (e) {
-          // formData.append('file', e.target.result)
-          // formData.append('pz_id', 1)
-          xhr.send(e.target.result)
-        }
+        const formData = new FormData()
+        formData.append('file', blob, 'file.json')
+        axios.post('http://localhost:3000/pzs/create_pz_file', formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data'
+          }
+        }).then((response) => {
+          console.log(response)
+        }).catch((error) => {
+          console.log(error)
+        })
       })
     },
     datetime () {
