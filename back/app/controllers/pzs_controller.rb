@@ -46,6 +46,6 @@ class PzsController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def pz_params
-      params.require(:pz).permit(:area_id, :type, :name, :radius, :altitude)
+      params.require(:pz).permit(:area_id, :name, :pz_type, :longitude, :latitude, :radius, :altitude)
     end
 end

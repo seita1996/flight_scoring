@@ -89,12 +89,12 @@ export default {
 
         loader = new GLTFLoader()
         // GLTFモデルを読み込み
-        const source = '/pin.gltf'
+        const source = '/enchu_lay.gltf'
         loader.load(
           source,
           (gltf) => {
-            gltf.scene.scale.set(25, 25, 25)
-            gltf.scene.rotation.x = 180 * Math.PI / 180
+            // gltf.scene.scale.set(25, 25, 25)
+            gltf.scene.rotation.x = Math.PI / 2
             scene.add(gltf.scene)
           }
         )
@@ -127,7 +127,8 @@ export default {
       const map = await initMap(self)
       initWebGLOverlayView(map)
     })()
-  }
+  },
+  methods: {}
 }
 </script>
 

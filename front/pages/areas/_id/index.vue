@@ -23,7 +23,7 @@ export default {
       pzs: [],
       fields: [
         { text: 'PZ名', value: 'name' },
-        { text: '種類', value: 'type' },
+        { text: '種類', value: 'pz_type' },
         { text: '緯度', value: 'longitude' },
         { text: '経度', value: 'latitude' },
         { text: '半径', value: 'radius' },
@@ -37,6 +37,7 @@ export default {
       console.log(res.data)
       if (res.data) {
         this.name = res.data.name
+        this.pzs = res.data.pzs
       }
     })
   },

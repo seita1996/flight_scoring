@@ -30,9 +30,9 @@ ActiveRecord::Schema[7.0].define(version: 2023_03_30_100327) do
   create_table "pzs", charset: "utf8mb4", force: :cascade do |t|
     t.bigint "area_id", null: false
     t.string "name", null: false
-    t.integer "type", null: false
-    t.float "longitude", null: false
-    t.float "latitude", null: false
+    t.integer "pz_type", default: 0, null: false
+    t.float "longitude", default: 0.0, null: false
+    t.float "latitude", default: 0.0, null: false
     t.integer "radius"
     t.integer "altitude"
     t.datetime "created_at", null: false
