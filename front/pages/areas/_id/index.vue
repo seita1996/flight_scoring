@@ -32,8 +32,8 @@ export default {
         { text: '種類', value: 'pz_type' },
         { text: '緯度', value: 'longitude' },
         { text: '経度', value: 'latitude' },
-        { text: '半径', value: 'radius' },
-        { text: '高度', value: 'altitude' }
+        { text: '半径（m）', value: 'radius' },
+        { text: '高度（m）', value: 'altitude' }
       ]
     }
   },
