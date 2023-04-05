@@ -9,17 +9,23 @@ v-container
   v-data-table(:headers="fields" :items="pzs" class="elevation-1")
     template(v-slot:[`item.name`]="{ item }")
       a(@click="movePzPage(item.id)") {{ item.name }}
+  Map(:pzs="pzs" v-if="dataPrepared")
   v-btn(@click="moveArea") 戻る
 </template>
 
 <script>
 import axios from '~/plugins/axios'
+import Map from '~/components/MapArea.vue'
 
 export default {
+  components: {
+    Map
+  },
   data () {
     return {
       name: '',
       id: this.$route.params.id,
+      dataPrepared: false,
       pzs: [],
       fields: [
         { text: 'PZ名', value: 'name' },
@@ -27,7 +33,8 @@ export default {
         { text: '緯度', value: 'longitude' },
         { text: '経度', value: 'latitude' },
         { text: '半径', value: 'radius' },
-        { text: '高度', value: 'altitude' }
+        { text: '高度', value: 'altitude' },
+        { text: 'URL', value: 'url' }
       ]
     }
   },
@@ -38,6 +45,7 @@ export default {
       if (res.data) {
         this.name = res.data.name
         this.pzs = res.data.pzs
+        this.dataPrepared = true
       }
     })
   },

@@ -10,7 +10,8 @@ class AreasController < ApplicationController
 
   # GET /areas/1
   def show
-    render json: @area, include: :pzs
+    render json: @area, include: { pzs: { methods: :file_blob } }
+
   end
 
   # POST /areas

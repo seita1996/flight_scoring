@@ -18,7 +18,7 @@ v-container
   v-row(align="center" justify="center")
     v-col(cols="12")
       v-text-field(label="高度(m)" v-model="altitude" prepend-icon="" type="text")
-  //- Map
+  Map
   v-btn(@click="backAreaIndex") 戻る
   v-btn.pull-right(color="primary" @click="createPz") 登録
 </template>
@@ -81,10 +81,11 @@ export default {
 
       // 3DオブジェクトをGLTF形式でエクスポートしてサーバーに送信する
       const exporter = new GLTFExporter()
+      const filename = `pz_${this.id}_${this.datetime()}.gltf`
       exporter.parse(cylinder, function (gltf) {
-        const blob = new Blob([JSON.stringify(gltf)], { type: 'application/json' })
+        const blob = new Blob([JSON.stringify(gltf)], { type: 'model/gltf+json' })
         const formData = new FormData()
-        formData.append('file', blob, 'file.json')
+        formData.append('file', blob, filename)
         axios.post('http://localhost:3000/pzs/create_pz_file', formData, {
           headers: {
             'Content-Type': 'multipart/form-data'
