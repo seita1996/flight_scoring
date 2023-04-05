@@ -42,8 +42,10 @@ export default {
         tilt: 60,
         heading: 0,
         zoom: 17,
+        // INFO: 暫定で該当エリアの１個目のPZを画面中央の座標とする
         // TODO: 地図の中心としてエリアの全体が移る範囲を都度指定
-        center: { lat: 35.6594945, lng: 139.6999859 },
+        center: { lat: 35.6736, lng: 139.756 },
+        // center: { lat: 35.6594945, lng: 139.6999859 },
         mapId: this.$config.mapsId,
         fullscreenControl: false,
         mapTypeControl: false,
@@ -62,6 +64,7 @@ export default {
     }
 
     async function initMap (self) {
+      console.log('initMap')
       const mapDiv = document.getElementById('map')
       const apiLoader = new Loader(apiOptions)
       await apiLoader.load().then((google) => {
@@ -72,7 +75,7 @@ export default {
         self.lat = self.map.getCenter().lat()
         self.lng = self.map.getCenter().lng()
 
-        // 常にマップの中心を画面表示
+        // 常にマップの中心座標を画面表示
         self.map.addListener('center_changed', () => {
           self.lat = self.map.getCenter().lat()
           self.lng = self.map.getCenter().lng()
@@ -86,6 +89,7 @@ export default {
       const webGLOverlayView = new self.google.maps.WebGLOverlayView()
 
       webGLOverlayView.onAdd = () => {
+        console.log('onAdd')
         scene = new THREE.Scene()
         camera = new THREE.PerspectiveCamera()
         const ambientLight = new THREE.AmbientLight(0xFFFFFF, 0.75)
@@ -99,10 +103,14 @@ export default {
         pzs.forEach(function (pz) {
           const source = pz.url
           if (source !== null) {
+            const position = new THREE.Vector3(pz.id * 300, 0, 0).add(camera.position)
             loader.load(
               source,
               (gltf) => {
+                // 円柱オブジェクトが垂直に立つよう変換
                 gltf.scene.rotation.x = Math.PI / 2
+                gltf.scene.position.set(position.x, position.y, position.z)
+
                 scene.add(gltf.scene)
               }
             )
@@ -110,6 +118,7 @@ export default {
         })
       }
       webGLOverlayView.onContextRestored = ({ gl }) => {
+        console.log('onContextRestored')
         renderer = new THREE.WebGLRenderer({
           canvas: gl.canvas,
           context: gl,
@@ -118,11 +127,13 @@ export default {
         renderer.autoClear = false
       }
       webGLOverlayView.onDraw = ({ gl, transformer }) => {
+        // 地図の中心座標とカメラの高度を指定
         const latLngAltitudeLiteral = {
           lat: mapOptions(self.google).center.lat,
           lng: mapOptions(self.google).center.lng,
           altitude: 100
         }
+        // オブジェクトの相対位置を設定
         const matrix = transformer.fromLatLngAltitude(latLngAltitudeLiteral)
         camera.projectionMatrix = new THREE.Matrix4().fromArray(matrix)
         webGLOverlayView.requestRedraw()
