@@ -33,8 +33,7 @@ export default {
         { text: '緯度', value: 'longitude' },
         { text: '経度', value: 'latitude' },
         { text: '半径', value: 'radius' },
-        { text: '高度', value: 'altitude' },
-        { text: 'URL', value: 'url' }
+        { text: '高度', value: 'altitude' }
       ]
     }
   },
