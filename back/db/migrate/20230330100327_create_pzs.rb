@@ -8,6 +8,7 @@ class CreatePzs < ActiveRecord::Migration[7.0]
       t.float :latitude, null: false, default: 0
       t.integer :radius
       t.integer :altitude
+      t.string :url
 
       t.timestamps
     end

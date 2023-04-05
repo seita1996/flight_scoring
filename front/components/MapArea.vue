@@ -14,6 +14,12 @@ import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
 
 export default {
   name: 'GoogleMap',
+  props: {
+    pzs: {
+      type: Array,
+      default: () => []
+    }
+  },
   data: function () {
     return {
       map: null,
@@ -36,6 +42,7 @@ export default {
         tilt: 60,
         heading: 0,
         zoom: 17,
+        // TODO: 地図の中心としてエリアの全体が移る範囲を都度指定
         center: { lat: 35.6594945, lng: 139.6999859 },
         mapId: this.$config.mapsId,
         fullscreenControl: false,
@@ -74,7 +81,7 @@ export default {
       return self.map
     }
 
-    function initWebGLOverlayView (map) {
+    function initWebGLOverlayView (map, pzs) {
       let scene, renderer, camera, loader
       const webGLOverlayView = new self.google.maps.WebGLOverlayView()
 
@@ -88,16 +95,19 @@ export default {
         scene.add(directionalLight)
 
         loader = new GLTFLoader()
-        // GLTFモデルを読み込み
-        const source = '/enchu_lay.gltf'
-        loader.load(
-          source,
-          (gltf) => {
-            // gltf.scene.scale.set(25, 25, 25)
-            gltf.scene.rotation.x = Math.PI / 2
-            scene.add(gltf.scene)
+        // propsで渡される GLTFモデルを読み込み
+        pzs.forEach(function (pz) {
+          const source = pz.url
+          if (source !== null) {
+            loader.load(
+              source,
+              (gltf) => {
+                gltf.scene.rotation.x = Math.PI / 2
+                scene.add(gltf.scene)
+              }
+            )
           }
-        )
+        })
       }
       webGLOverlayView.onContextRestored = ({ gl }) => {
         renderer = new THREE.WebGLRenderer({
@@ -125,7 +135,7 @@ export default {
     (async () => {
       const self = this
       const map = await initMap(self)
-      initWebGLOverlayView(map)
+      initWebGLOverlayView(map, this.pzs)
     })()
   },
   methods: {}

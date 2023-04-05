@@ -63,6 +63,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_04_04_055209) do
     t.float "latitude", default: 0.0, null: false
     t.integer "radius"
     t.integer "altitude"
+    t.string "url"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["area_id"], name: "index_pzs_on_area_id"

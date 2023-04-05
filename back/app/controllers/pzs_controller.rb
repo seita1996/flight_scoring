@@ -1,4 +1,5 @@
 class PzsController < ApplicationController
+  include Rails.application.routes.url_helpers
   before_action :set_pz, only: %i[ show update destroy ]
 
   # GET /pzs
@@ -47,6 +48,7 @@ class PzsController < ApplicationController
     )
     @pz = Pz.last
     @pz.file.attach(blob)
+    @pz.url = url_for(blob)
 
     if @pz.save
       render json: @pz, status: :created
