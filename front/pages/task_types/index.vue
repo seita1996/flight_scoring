@@ -2,12 +2,12 @@
 v-container
   v-row(align="center" justify="center")
     v-col(cols="12")
-      v-btn.pull-right(color="primary" @click="moveTaskTypeNew") 登録
+        .text-h4.title タスク一覧
     v-col(cols="12")
-        h1 タスク一覧
+      v-btn.pull-right(color="primary" @click="moveTaskTypeNew") 登録
   v-data-table(:headers="fields" :items="task_types" :items-per-page="5" class="elevation-1" @click:row="moveTaskTypeEdit")
     template(v-slot:item.action="{ item }")
-      v-btn(@click.stop="clickDelete(item)") 削除
+      v-btn(outlined color="red" @click.stop="clickDelete(item)") 削除
 </template>
 
 <script>
@@ -65,5 +65,9 @@ export default {
 .pull-right {
   float: right;
   margin-bottom: 10px;
+}
+.title{
+  text-align: center;
+  margin-bottom: 20px;
 }
 </style>
