@@ -71,6 +71,8 @@ ActiveRecord::Schema[7.0].define(version: 2023_04_04_055209) do
 
   create_table "task_types", charset: "utf8mb4", force: :cascade do |t|
     t.string "name", null: false
+    t.string "short_name", null: false
+    t.string "description"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
