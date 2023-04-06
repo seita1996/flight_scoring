@@ -1,9 +1,15 @@
 class TaskTypesController < ApplicationController
-  before_action :set_task_type, only: %i[update destroy]
+  before_action :set_task_type, only: %i[show update destroy]
 
   def index
     @task_types = TaskType.all
 
+    render json: @task_types
+  end
+
+
+  # GET /task_types/1
+  def show
     render json: @task_types
   end
 
@@ -26,7 +32,11 @@ class TaskTypesController < ApplicationController
   end
 
   def destroy
-    @task_types.destroy
+    if @task_types.destroy
+      render json: @task_types, status: 200
+    else
+      render json: @task_types.errors, status: :unprocessable_entity
+    end
   end
 
   private

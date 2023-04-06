@@ -5,9 +5,9 @@ v-container
       v-btn.pull-right(color="primary" @click="moveTaskTypeNew") 登録
     v-col(cols="12")
         h1 タスク一覧
-  v-data-table(:headers="fields" :items="task_types" :items-per-page="5" class="elevation-1")
-    template(v-slot:[`item.name`]="{ item }")
-      a(@click="moveTaskTypePage(item.id)") {{ item.name }}
+  v-data-table(:headers="fields" :items="task_types" :items-per-page="5" class="elevation-1" @click:row="moveTaskTypeEdit")
+    template(v-slot:item.action="{ item }")
+      v-btn(@click.stop="clickDelete(item)") 削除
 </template>
 
 <script>
@@ -21,8 +21,15 @@ export default {
       fields: [
         { text: 'タスク名', value: 'name' },
         { text: '略称', value: 'short_name' },
-        { text: '説明', value: 'description' }
+        { text: '説明', value: 'description' },
+        { text: '操作', value: 'action' }
       ]
+    }
+  },
+  notifications: {
+    toast: {
+      type: 'success',
+      message: ''
     }
   },
   created () {
@@ -33,11 +40,22 @@ export default {
     })
   },
   methods: {
+    moveTaskTypeEdit (row) {
+      this.$router.push({ name: 'task_types-id', params: { id: row.id } })
+    },
     moveTaskTypeNew () {
       this.$router.push('/task_types/new')
     },
-    moveTaskTypePage (id) {
-      this.$router.push({ name: 'task_types-id', params: { id } })
+    clickDelete (item) {
+      const self = this
+      axios.delete('/task_types/' + item.id).then(() => {
+        self.$router.go({ path: self.$router.currentRoute.path, force: true })
+        self.toast({
+          type: 'success',
+          message: '削除が完了しました',
+          timeout: 2000
+        })
+      })
     }
   }
 }
