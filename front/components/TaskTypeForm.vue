@@ -10,7 +10,7 @@ v-container
     v-col(cols="12")
       v-text-field(label="説明" v-model="description" prepend-icon="" type="text")
   v-btn(@click="moveTaskType") 戻る
-  v-btn.pull-right(color="primary" @click="createTaskType") {{ button_name }}
+  v-btn.pull-right(color="primary" @click="clickButton") {{ button_name }}
 </template>
 
 <script>
@@ -46,11 +46,7 @@ export default {
       this.button_name = '登録'
     } else if (this.formType === 'edit') {
       this.button_name = '更新'
-      console.log('更新')
-      console.log(this.taskTypeId)
       axios.get('/task_types/' + this.taskTypeId).then((res) => {
-        console.log('res.data')
-        console.log(res.data)
         if (res.data) {
           this.name = res.data.name
           this.short_name = res.data.short_name
@@ -64,7 +60,7 @@ export default {
       if (this.formType === 'new') {
         this.createTaskType()
       } else if (this.formType === 'edit') {
-        this.updateTaskType()
+        this.updateTaskType(this.taskTypeId)
       }
     },
     createTaskType () {
@@ -78,13 +74,13 @@ export default {
         })
       })
     },
-    updateTaskType () {
+    updateTaskType (id) {
       const self = this
-      axios.post('/task_types', { name: this.name, short_name: this.short_name, description: this.description }).then((res) => {
+      axios.put('/task_types/' + id, { name: this.name, short_name: this.short_name, description: this.description }).then((res) => {
         self.$router.push('/task_types')
         self.toast({
           type: 'success',
-          message: '登録が完了しました',
+          message: '更新が完了しました',
           timeout: 2000
         })
       })

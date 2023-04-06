@@ -1,6 +1,7 @@
 class TaskTypesController < ApplicationController
   before_action :set_task_type, only: %i[show update destroy]
 
+  # GET /task_types
   def index
     @task_types = TaskType.all
 
@@ -13,6 +14,7 @@ class TaskTypesController < ApplicationController
     render json: @task_types
   end
 
+  # POST /task_types
   def create
     @task_types = TaskType.new(task_type_params)
 
@@ -23,6 +25,7 @@ class TaskTypesController < ApplicationController
     end
   end
 
+  # PUT /task_types/1
   def update
     if @task_types.update(task_type_params)
       render json: @task_types
@@ -31,6 +34,7 @@ class TaskTypesController < ApplicationController
     end
   end
 
+  # DELETE /task_types/1
   def destroy
     if @task_types.destroy
       render json: @task_types, status: 200
