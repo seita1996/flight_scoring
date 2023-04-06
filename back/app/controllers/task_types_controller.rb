@@ -36,6 +36,6 @@ class TaskTypesController < ApplicationController
   end
 
   def task_type_params
-    params.require(:task_type).permit(:name)
+    params.require(:task_type).permit(:name, :short_name, :description)
   end
 end

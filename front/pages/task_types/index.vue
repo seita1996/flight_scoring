@@ -2,17 +2,12 @@
 v-container
   v-row(align="center" justify="center")
     v-col(cols="12")
-      v-text-field(label="タスク名" v-model="name" prepend-icon="" type="text")
-      v-btn(color="primary" @click="createTaskType") 登録
+      v-btn.pull-right(color="primary" @click="moveTaskTypeNew") 登録
     v-col(cols="12")
         h1 タスク一覧
-  v-card(class="mx-auto" max-width="300" tile)
-    v-list(rounded)
-      v-subheader TASKTYPE
-      v-list-item-group(color="primary")
-        v-list-item(v-for="task_type in task_types" :key="task_type.id" @click="")
-          v-list-item-content
-            v-list-item-title(v-text="task_type.name")
+  v-data-table(:headers="fields" :items="task_types" :items-per-page="5" class="elevation-1")
+    template(v-slot:[`item.name`]="{ item }")
+      a(@click="moveTaskTypePage(item.id)") {{ item.name }}
 </template>
 
 <script>
@@ -22,7 +17,12 @@ export default {
   data () {
     return {
       name: '',
-      task_types: []
+      task_types: [],
+      fields: [
+        { text: 'タスク名', value: 'name' },
+        { text: '略称', value: 'short_name' },
+        { text: '説明', value: 'description' }
+      ]
     }
   },
   created () {
@@ -33,13 +33,19 @@ export default {
     })
   },
   methods: {
-    createTaskType () {
-      axios.post('/task_types', { name: this.name }).then((res) => {
-        if (res.data) {
-          this.task_types.push(res.data)
-        }
-      })
+    moveTaskTypeNew () {
+      this.$router.push('/task_types/new')
+    },
+    moveTaskTypePage (id) {
+      this.$router.push({ name: 'task_types-id', params: { id } })
     }
   }
 }
 </script>
+
+<style>
+.pull-right {
+  float: right;
+  margin-bottom: 10px;
+}
+</style>
