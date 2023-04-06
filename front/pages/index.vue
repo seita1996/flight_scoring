@@ -25,6 +25,10 @@ export default {
       users: []
     }
   },
+  mounted () {
+    // /areasに遷移させる
+    this.$router.push('/areas')
+  },
   created () {
     // ユーザーをaxiosで取得
     axios.get('/users').then((res) => {
