@@ -27,7 +27,7 @@ export default {
   notifications: {
     toast: {
       type: 'success',
-      message: 'test message'
+      message: ''
     }
   },
   methods: {
