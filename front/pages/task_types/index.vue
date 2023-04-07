@@ -5,7 +5,7 @@ v-container
         .text-h4.title タスク一覧
     v-col(cols="12")
       v-btn.pull-right(color="primary" @click="moveTaskTypeNew") 登録
-  v-data-table(:headers="fields" :items="task_types" :items-per-page="5" class="elevation-1" @click:row="moveTaskTypeEdit")
+  v-data-table(:headers="fields" :items="task_types" :items-per-page="5" class="elevation-1  pointer" @click:row="moveTaskTypeEdit")
     template(v-slot:item.action="{ item }")
       v-btn(outlined color="red" @click.stop="clickDelete(item)") 削除
 </template>
@@ -69,5 +69,8 @@ export default {
 .title{
   text-align: center;
   margin-bottom: 20px;
+}
+.pointer {
+  cursor: pointer;
 }
 </style>
