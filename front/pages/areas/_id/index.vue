@@ -54,11 +54,12 @@ export default {
       this.$router.push('/areas')
     },
     movePzNew () {
-      const id = this.id
-      this.$router.push({ name: 'pzs-new', params: { id } })
+      const areaId = this.id
+      this.$router.push({ name: 'pzs-new', params: { areaId } })
     },
     movePzEdit (row) {
-      this.$router.push({ name: 'pzs-id', params: { id: row.id } })
+      const areaId = this.id
+      this.$router.push({ name: 'pzs-id', params: { id: row.id, areaId } })
     },
     clickDelete (item) {
       const self = this

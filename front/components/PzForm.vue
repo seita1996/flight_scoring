@@ -38,7 +38,11 @@ export default {
       type: String,
       default: ''
     },
-    taskTypeId: {
+    pzId: {
+      type: Number,
+      default: 0
+    },
+    areaId: {
       type: Number,
       default: 0
     }
@@ -53,8 +57,8 @@ export default {
       radius: 0,
       altitude: 0,
       pz_types: [
-        { text: 'レッドPZ(円柱型)', value: 1 },
-        { text: 'イエローPZ', value: 2 }
+        { text: 'レッドPZ(円柱型)', value: 0 },
+        { text: 'イエローPZ', value: 1 }
       ],
       button_name: ''
     }
@@ -70,13 +74,16 @@ export default {
       this.button_name = '登録'
     } else if (this.formType === 'edit') {
       this.button_name = '更新'
-      // axios.get('/task_types/' + this.taskTypeId).then((res) => {
-      //   if (res.data) {
-      //     this.name = res.data.name
-      //     this.short_name = res.data.short_name
-      //     this.description = res.data.description
-      //   }
-      // })
+      axios.get('/pzs/' + this.pzId).then((res) => {
+        if (res.data) {
+          this.name = res.data.name
+          this.type = res.data.pz_type
+          this.longitude = res.data.longitude
+          this.latitude = res.data.latitude
+          this.radius = res.data.radius
+          this.altitude = res.data.altitude
+        }
+      })
     }
   },
   methods: {
@@ -84,19 +91,31 @@ export default {
       if (this.formType === 'new') {
         this.createPz()
       } else if (this.formType === 'edit') {
-        this.updatePz(this.taskTypeId)
+        this.updatePz(this.pzId)
       }
     },
     createPz () {
       const self = this
       // 3Dオブジェクトを生成する
-      axios.post('/pzs', { area_id: 1, name: this.name, pz_type: this.pz_type, longitude: this.longitude, latitude: this.latitude, radius: this.radius, altitude: this.altitude })
+      axios.post('/pzs', { area_id: this.areaId, name: this.name, pz_type: this.pz_type, longitude: this.longitude, latitude: this.latitude, radius: this.radius, altitude: this.altitude })
       this.exportCylinder()
-      self.$router.push('/areas')
+      self.$router.push(`/areas/${this.areaId}`)
       self.toast({
         type: 'success',
         message: '登録が完了しました',
         timeout: 2000
+      })
+    },
+    updatePz (id) {
+      const self = this
+      axios.put('/pzs/' + id, { area_id: this.areaId, name: this.name, pz_type: this.pz_type, longitude: this.longitude, latitude: this.latitude, radius: this.radius, altitude: this.altitude }).then((res) => {
+        self.exportCylinder()
+        self.$router.push(`/areas/${this.areaId}`)
+        self.toast({
+          type: 'success',
+          message: '更新が完了しました',
+          timeout: 2000
+        })
       })
     },
     // 円柱状3Dオブジェクト(.gltf)を生成し、サーバーに送信した上で/static配下に保存する
@@ -140,7 +159,7 @@ export default {
       return `${year}${month}${date}${hours}${minutes}${seconds}`
     },
     backAreaIndex () {
-      this.$router.push('/pzs')
+      this.$router.push(`/areas/${this.areaId}`)
     }
   }
 }
