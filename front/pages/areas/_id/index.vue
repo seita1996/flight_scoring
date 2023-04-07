@@ -6,9 +6,9 @@ v-container
   v-row(align="center" justify="center")
     v-col(cols="12")
       v-text-field(label="エリア名" v-model="name" prepend-icon="" type="text")
-  v-data-table(:headers="fields" :items="pzs" class="elevation-1")
-    template(v-slot:[`item.name`]="{ item }")
-      a(@click="movePzPage(item.id)") {{ item.name }}
+  v-data-table(:headers="fields" :items="pzs" class="elevation-1 pointer" @click:row="movePzEdit")
+    template(v-slot:item.action="{ item }")
+      v-btn(outlined color="red" @click.stop="clickDelete(item)") 削除
   Map(:pzs="pzs" v-if="dataPrepared")
   v-btn(@click="moveArea") 戻る
 </template>
@@ -33,7 +33,8 @@ export default {
         { text: '緯度', value: 'longitude' },
         { text: '経度', value: 'latitude' },
         { text: '半径（m）', value: 'radius' },
-        { text: '高度（m）', value: 'altitude' }
+        { text: '高度（m）', value: 'altitude' },
+        { text: '操作', value: 'action' }
       ]
     }
   },
@@ -53,11 +54,23 @@ export default {
       this.$router.push('/areas')
     },
     movePzNew () {
-      const id = this.id
-      this.$router.push({ name: 'pzs-new', params: { id } })
+      const areaId = this.id
+      this.$router.push({ name: 'pzs-new', params: { areaId } })
     },
-    movePzPage (id) {
-      this.$router.push({ name: 'pzs-id', params: { id } })
+    movePzEdit (row) {
+      const areaId = this.id
+      this.$router.push({ name: 'pzs-id', params: { id: row.id, areaId } })
+    },
+    clickDelete (item) {
+      const self = this
+      axios.delete('/pzs/' + item.id).then(() => {
+        self.$router.go({ path: self.$router.currentRoute.path, force: true })
+        self.toast({
+          type: 'success',
+          message: '削除が完了しました',
+          timeout: 2000
+        })
+      })
     }
   }
 }
@@ -67,5 +80,8 @@ export default {
 .pull-right {
   float: right;
   margin-bottom: 10px;
+}
+.pointer {
+  cursor: pointer;
 }
 </style>
