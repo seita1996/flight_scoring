@@ -3,9 +3,7 @@ v-container
   v-row(align="center" justify="center")
     v-col(cols="12")
       v-btn.pull-right(color="primary" @click="moveAreaNew") エリア登録
-  v-data-table(:headers="fields" :items="areas" :items-per-page="5" class="elevation-1")
-    template(v-slot:[`item.name`]="{ item }")
-      a(@click="moveAreaPage(item.id)") {{ item.name }}
+  v-data-table(:headers="fields" :items="areas" :items-per-page="5" class="elevation-1 pointer"  @click:row="moveAreaPage")
 </template>
 
 <script>
@@ -33,9 +31,8 @@ export default {
     moveAreaNew () {
       this.$router.push('/areas/new')
     },
-    moveAreaPage (id) {
-      // this.$router.push({ path: `/areas/${id}` })
-      this.$router.push({ name: 'areas-id', params: { id } })
+    moveAreaPage (row) {
+      this.$router.push({ name: 'areas-id', params: { id: row.id } })
     }
   }
 }
@@ -45,5 +42,8 @@ export default {
 .pull-right {
   float: right;
   margin-bottom: 10px;
+}
+.pointer {
+  cursor: pointer;
 }
 </style>

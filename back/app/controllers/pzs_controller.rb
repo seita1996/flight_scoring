@@ -25,7 +25,7 @@ class PzsController < ApplicationController
     end
   end
 
-  # PATCH/PUT /pzs/1
+  # PUT /pzs/1
   def update
     if @pz.update(pz_params)
       render json: @pz
