@@ -44,7 +44,7 @@ export default {
         zoom: 17,
         // INFO: 暫定で該当エリアの１個目のPZを画面中央の座標とする
         // TODO: 地図の中心としてエリアの全体が移る範囲を都度指定
-        center: { lat: 35.6736, lng: 139.756 },
+        center: { lat: 35.6609, lng: 139.685 },
         // center: { lat: 35.6594945, lng: 139.6999859 },
         mapId: this.$config.mapsId,
         fullscreenControl: false,
@@ -67,6 +67,7 @@ export default {
       console.log('initMap')
       const mapDiv = document.getElementById('map')
       const apiLoader = new Loader(apiOptions)
+      let posArray
       await apiLoader.load().then((google) => {
         self.google = google
         // 地図の初期化
@@ -80,13 +81,32 @@ export default {
           self.lat = self.map.getCenter().lat()
           self.lng = self.map.getCenter().lng()
         })
+
+        // オブジェクト位置
+        const latLng1 = new google.maps.LatLng(35.6609, 139.685)
+        const latLng2 = new google.maps.LatLng(35.6736, 139.756)
+
+        // オブジェクト位置からカメラ位置への距離と方位角を計算する
+        const distance1 = google.maps.geometry.spherical.computeDistanceBetween(latLng1, latLng1)
+        const heading1 = google.maps.geometry.spherical.computeHeading(latLng1, latLng1)
+        const distance2 = google.maps.geometry.spherical.computeDistanceBetween(latLng1, latLng2)
+        const heading2 = google.maps.geometry.spherical.computeHeading(latLng1, latLng2)
+
+        // オブジェクト位置をthree.jsの座標系に変換する
+        const position1 = getPositionFromDistanceAndAzimuth(latLng1, distance1, heading1)
+        const position2 = getPositionFromDistanceAndAzimuth(latLng2, distance2, heading2)
+        posArray = [position1, position2]
       })
-      return self.map
+      return [self.map, posArray]
     }
 
-    function initWebGLOverlayView (map, pzs) {
+    function initWebGLOverlayView (map, pzs, posArray) {
       let scene, renderer, camera, loader
       const webGLOverlayView = new self.google.maps.WebGLOverlayView()
+      console.log('pzs')
+      console.log(pzs)
+      // console.log('posArray')
+      // console.log(posArray)
 
       webGLOverlayView.onAdd = () => {
         console.log('onAdd')
@@ -100,16 +120,23 @@ export default {
 
         loader = new GLTFLoader()
         // propsで渡される GLTFモデルを読み込み
-        pzs.forEach(function (pz) {
+        pzs.forEach(function (pz, i) {
+          console.log('posArray[i].x')
+          console.log(posArray[i].x)
+          console.log('posArray[i].y')
+          console.log(posArray[i].y)
+          console.log('posArray[i].z')
+          console.log(posArray[i].z)
           const source = pz.url
           if (source !== null) {
-            const position = new THREE.Vector3(pz.id * 300, 0, 0).add(camera.position)
+            // const position = new THREE.Vector3(pz.id * 300, 0, 0).add(camera.position)
             loader.load(
               source,
               (gltf) => {
                 // 円柱オブジェクトが垂直に立つよう変換
                 gltf.scene.rotation.x = Math.PI / 2
-                gltf.scene.position.set(position.x, position.y, position.z)
+                // すでに作成したpositions[0].xなどから取得する
+                gltf.scene.position.set(posArray[i].x, posArray[i].y, posArray[i].z)
 
                 scene.add(gltf.scene)
               }
@@ -143,10 +170,144 @@ export default {
       webGLOverlayView.setMap(map)
     }
 
+    // function setObjectPosition (camera) {
+    //   // const positions = [
+    //   //   pos1: {
+    //   //     lat: 35.6609,
+    //   //     lon: 139.685
+    //   //   },
+    //   //   pos2: {
+    //   //     lat: 35.6736,
+    //   //     lon: 139.756
+    //   //   },
+    //   //   pos3: {
+    //   //     lat: 35.6769,
+    //   //     lon: 139.752
+    //   //   }
+    //   // ]
+    //   // pzsの緯度経度を取得
+    //   const lat1 = 35.6609
+    //   const lon1 = 139.685
+    //   const lat2 = 35.6736
+    //   const lon2 = 139.756
+    //   // const lat3 = 35.6769
+    //   // const lon3 = 139.752
+    //   const startPosition = {
+    //     lat: lat1,
+    //     lon: lon1
+    //   }
+
+    //   // 緯度経度から直線距離と方位角を計算
+    //   console.log('setObjectPosition')
+    //   const [distance, azimuth] = calcDistanceAndAzimuth(lat1, lon1, lat2, lon2)
+    //   console.log('distance')
+    //   console.log(distance)
+    //   console.log('azimuth')
+    //   console.log(azimuth)
+    //   // カメラの位置を設定
+    //   // const cameraPosition = getPositionFromDistanceAndAzimuth(startPosition, distance, azimuth)
+    //   // console.log('cameraPosition')
+    //   // console.log(cameraPosition)
+    //   // camera.position.set(cameraPosition.x, cameraPosition.y, cameraPosition.z)
+
+    //   // GLTFモデルの位置を設定
+    //   const objPosition = getPositionFromDistanceAndAzimuth(startPosition, distance, azimuth)
+    //   console.log('objPosition')
+    //   console.log(objPosition)
+    // }
+
+    // function calcDistanceAndAzimuth (lat1, lon1, lat2, lon2) {
+    //   // 緯度経度をラジアンに変換
+    //   const radLat1 = lat1 * Math.PI / 180
+    //   const radLon1 = lon1 * Math.PI / 180
+    //   const radLat2 = lat2 * Math.PI / 180
+    //   const radLon2 = lon2 * Math.PI / 180
+
+    //   // 緯度差、経度差を計算
+    //   const dLat = radLat2 - radLat1
+    //   const dLon = radLon2 - radLon1
+
+    //   // 2点間の距離を計算
+    //   const R = 6371 // km
+    //   const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+    //             Math.cos(radLat1) * Math.cos(radLat2) *
+    //             Math.sin(dLon / 2) * Math.sin(dLon / 2)
+    //   const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a))
+    //   const distance = R * c * 1000 // m
+
+    //   // 方位角を計算
+    //   const y = Math.sin(dLon) * Math.cos(radLat2)
+    //   const x = Math.cos(radLat1) * Math.sin(radLat2) -
+    //             Math.sin(radLat1) * Math.cos(radLat2) * Math.cos(dLon)
+    //   const azimuth = Math.atan2(y, x)
+
+    //   return [distance, azimuth]
+    // }
+
+    // function getPositionFromDistanceAndAzimuth (startPosition, distance, azimuth) {
+    //   const R = 6371 // km
+    //   const lat1 = toRadians(startPosition.lat)
+    //   const lon1 = toRadians(startPosition.lng)
+    //   const distanceRadians = distance / R
+    //   const bearingRadians = toRadians(azimuth)
+
+    //   const lat2 = Math.asin(
+    //     Math.sin(lat1) * Math.cos(distanceRadians) +
+    //       Math.cos(lat1) * Math.sin(distanceRadians) * Math.cos(bearingRadians)
+    //   )
+    //   const lon2 =
+    //     lon1 +
+    //     Math.atan2(
+    //       Math.sin(bearingRadians) * Math.sin(distanceRadians) * Math.cos(lat1),
+    //       Math.cos(distanceRadians) - Math.sin(lat1) * Math.sin(lat2)
+    //     )
+
+    //   return {
+    //     lat: toDegrees(lat2),
+    //     lng: toDegrees(lon2)
+    //   }
+    // }
+    // // 角度をラジアンに変換する関数
+    // function toRadians (degrees) {
+    //   return degrees * Math.PI / 180
+    // }
+    // // ラジアンを角度に変換する関数
+    // function toDegrees (radians) {
+    //   return radians * 180 / Math.PI
+    // }
+
+    function getPositionFromDistanceAndAzimuth (latLng, distance, heading) {
+      // ラジアンを度に変換するための定数
+      const DEG2RAD = Math.PI / 180
+      const lat = latLng.lat() * DEG2RAD
+      const lng = latLng.lng() * DEG2RAD
+      const earthRadius = 6378137 // 地球の半径（単位:メートル）
+
+      // 指定された距離と方位から、オブジェクトの位置を計算する
+      const dx = distance * Math.sin(heading * DEG2RAD)
+      const dz = distance * Math.cos(heading * DEG2RAD)
+      const latOffset = (dx / earthRadius) * (180 / Math.PI)
+      const lngOffset = (dz / earthRadius) * (180 / Math.PI) / Math.cos(lat)
+      const lat2 = lat + latOffset * DEG2RAD
+      const lng2 = lng + lngOffset * DEG2RAD
+      const position = new THREE.Vector3(
+        earthRadius * Math.cos(lat2) * Math.sin(lng2 - lng),
+        earthRadius * Math.sin(lat2),
+        earthRadius * Math.cos(lat2) * Math.cos(lng2 - lng)
+      )
+      return position
+    }
+
     (async () => {
       const self = this
-      const map = await initMap(self)
-      initWebGLOverlayView(map, this.pzs)
+      const [map, posArray] = await initMap(self)
+      console.log('map')
+      console.log(map)
+      console.log('posArray')
+      console.log(posArray)
+      // const camera = new THREE.PerspectiveCamera()
+      // setObjectPosition(camera)
+      initWebGLOverlayView(map, this.pzs, posArray)
     })()
   },
   methods: {}
