@@ -65,7 +65,7 @@ export default {
     async function initMap (self) {
       const mapDiv = document.getElementById('map')
       const apiLoader = new Loader(apiOptions)
-      let posArray
+      const posArray = []
       await apiLoader.load().then((google) => {
         self.google = google
         // 地図の初期化
@@ -81,19 +81,25 @@ export default {
         })
 
         // オブジェクト位置
-        const latLng1 = new google.maps.LatLng(35.6609, 139.685)
-        const latLng2 = new google.maps.LatLng(35.6736, 139.756)
+        const latLngs = []
+        self.pzs.forEach((pz) => {
+          latLngs.push(new google.maps.LatLng(pz.longitude, pz.latitude))
+        })
 
-        // オブジェクト位置からカメラ位置への距離と方位角を計算する
-        const distance1 = google.maps.geometry.spherical.computeDistanceBetween(latLng1, latLng1)
-        const heading1 = google.maps.geometry.spherical.computeHeading(latLng1, latLng1)
-        const distance2 = google.maps.geometry.spherical.computeDistanceBetween(latLng1, latLng2)
-        const heading2 = google.maps.geometry.spherical.computeHeading(latLng1, latLng2)
+        // カメラ位置(オブジェクト１)から各オブジェクトへの距離と方位角を計算する
+        const distances = []
+        const headings = []
+        latLngs.forEach((latLng) => {
+          distances.push(google.maps.geometry.spherical.computeDistanceBetween(latLngs[0], latLng))
+          headings.push(google.maps.geometry.spherical.computeHeading(latLngs[0], latLng))
+        })
 
         // オブジェクト位置をthree.jsの座標系に変換する
-        const position1 = getPositionFromDistanceAndAzimuth(latLng1, distance1, heading1)
-        const position2 = getPositionFromDistanceAndAzimuth(latLng2, distance2, heading2)
-        posArray = [position1.clone().sub(position1), position2.clone().sub(position1)]
+        const positions = []
+        latLngs.forEach((position, i) => {
+          positions.push(getPositionFromDistanceAndAzimuth(latLngs[0], distances[i], headings[i]))
+          posArray.push(positions[i].clone().sub(positions[0]))
+        })
       })
       return [self.map, posArray]
     }
