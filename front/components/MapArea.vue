@@ -44,8 +44,7 @@ export default {
         zoom: 17,
         // INFO: 暫定で該当エリアの１個目のPZを画面中央の座標とする
         // TODO: 地図の中心としてエリアの全体が移る範囲を都度指定
-        center: { lat: 35.6736, lng: 139.756 },
-        // center: { lat: 35.6594945, lng: 139.6999859 },
+        center: { lat: 35.6609, lng: 139.685 },
         mapId: this.$config.mapsId,
         fullscreenControl: false,
         mapTypeControl: false,
@@ -64,9 +63,9 @@ export default {
     }
 
     async function initMap (self) {
-      console.log('initMap')
       const mapDiv = document.getElementById('map')
       const apiLoader = new Loader(apiOptions)
+      const posArray = []
       await apiLoader.load().then((google) => {
         self.google = google
         // 地図の初期化
@@ -80,11 +79,32 @@ export default {
           self.lat = self.map.getCenter().lat()
           self.lng = self.map.getCenter().lng()
         })
+
+        // オブジェクト位置
+        const latLngs = []
+        self.pzs.forEach((pz) => {
+          latLngs.push(new google.maps.LatLng(pz.longitude, pz.latitude))
+        })
+
+        // カメラ位置(オブジェクト１)から各オブジェクトへの距離と方位角を計算する
+        const distances = []
+        const headings = []
+        latLngs.forEach((latLng) => {
+          distances.push(google.maps.geometry.spherical.computeDistanceBetween(latLngs[0], latLng))
+          headings.push(google.maps.geometry.spherical.computeHeading(latLngs[0], latLng))
+        })
+
+        // オブジェクト位置をthree.jsの座標系に変換する
+        const positions = []
+        latLngs.forEach((position, i) => {
+          positions.push(getPositionFromDistanceAndAzimuth(latLngs[0], distances[i], headings[i]))
+          posArray.push(positions[i].clone().sub(positions[0]))
+        })
       })
-      return self.map
+      return [self.map, posArray]
     }
 
-    function initWebGLOverlayView (map, pzs) {
+    function initWebGLOverlayView (map, pzs, posArray) {
       let scene, renderer, camera, loader
       const webGLOverlayView = new self.google.maps.WebGLOverlayView()
 
@@ -100,16 +120,17 @@ export default {
 
         loader = new GLTFLoader()
         // propsで渡される GLTFモデルを読み込み
-        pzs.forEach(function (pz) {
+        pzs.forEach(function (pz, i) {
           const source = pz.url
           if (source !== null) {
-            const position = new THREE.Vector3(pz.id * 300, 0, 0).add(camera.position)
             loader.load(
               source,
               (gltf) => {
                 // 円柱オブジェクトが垂直に立つよう変換
                 gltf.scene.rotation.x = Math.PI / 2
-                gltf.scene.position.set(position.x, position.y, position.z)
+                gltf.scene.position.set(posArray[i].x, posArray[i].y, posArray[i].z)
+                console.log('gltf.scene.position')
+                console.log(gltf.scene.position)
 
                 scene.add(gltf.scene)
               }
@@ -143,10 +164,32 @@ export default {
       webGLOverlayView.setMap(map)
     }
 
+    function getPositionFromDistanceAndAzimuth (CamPos, distance, heading) {
+      // ラジアンを度に変換するための定数
+      const DEG2RAD = Math.PI / 180
+      const lat = CamPos.lat() * DEG2RAD
+      const lng = CamPos.lng() * DEG2RAD
+      const earthRadius = 6378137 // 地球の半径（単位:メートル）
+
+      // 指定された距離と方位から、オブジェクトの位置を計算する
+      const dx = distance * Math.sin(heading * DEG2RAD)
+      const dz = distance * Math.cos(heading * DEG2RAD)
+      const latOffset = (dx / earthRadius) * (180 / Math.PI)
+      const lngOffset = (dz / earthRadius) * (180 / Math.PI) / Math.cos(lat)
+      const lat2 = lat + latOffset * DEG2RAD
+      const lng2 = lng + lngOffset * DEG2RAD
+      const position = new THREE.Vector3(
+        earthRadius * Math.cos(lat2) * Math.sin(lng2 - lng),
+        earthRadius * Math.sin(lat2),
+        earthRadius * Math.cos(lat2) * Math.cos(lng2 - lng)
+      )
+      return position
+    }
+
     (async () => {
       const self = this
-      const map = await initMap(self)
-      initWebGLOverlayView(map, this.pzs)
+      const [map, posArray] = await initMap(self)
+      initWebGLOverlayView(map, this.pzs, posArray)
     })()
   },
   methods: {}
