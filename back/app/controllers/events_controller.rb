@@ -3,9 +3,8 @@ class EventsController < ApplicationController
   before_action :set_event, only: %i[show update destroy]
 
   def index
-    @events = Event.all
-
-    render json: @events
+    @events = Event.includes(:area).all
+    render json: @events, include: :area
   end
 
   def show
@@ -41,6 +40,6 @@ class EventsController < ApplicationController
   end
 
   def event_params
-    params.require(:event).permit(:name, :director, :start_term, :end_term)
+    params.require(:event).permit(:name, :area_id, :director, :start_term, :end_term)
   end
 end

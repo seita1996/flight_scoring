@@ -15,9 +15,11 @@ export default {
   data () {
     return {
       name: '',
+      areas: [],
       events: [],
       fields: [
         { text: '大会名', value: 'name' },
+        { text: 'エリア', value: 'area_name' },
         { text: 'イベントディレクター', value: 'director' },
         { text: '開催期間(start)', value: 'start_day' },
         { text: '開催期間(end)', value: 'end_day' }
@@ -29,6 +31,7 @@ export default {
       if (res.data) {
         const events = res.data
         events.forEach((event) => {
+          event.area_name = event.area.name
           event.start_day = this.getFormatDate(event.start_term)
           event.end_day = this.getFormatDate(event.end_term)
         })
