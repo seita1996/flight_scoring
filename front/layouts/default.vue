@@ -33,7 +33,7 @@ export default {
         },
         {
           icon: 'mdi-chart-bubble',
-          title: '設定',
+          title: 'タスク一覧',
           to: '/task_types'
         },
         {

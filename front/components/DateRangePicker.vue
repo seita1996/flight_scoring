@@ -12,12 +12,21 @@ v-row
 
 <script>
 export default {
+  props: {
+    oldDates: {
+      type: Array,
+      default: null
+    }
+  },
   data: () => ({
     dates: [],
     menu: false,
     modal: false,
     menu2: false
   }),
+  mounted () {
+    this.dates = this.oldDates
+  },
   methods: {
     updateDates () {
       this.$refs.menu.save(this.dates)
