@@ -8,7 +8,7 @@ class EventsController < ApplicationController
   end
 
   def show
-    render json: @event
+    render json: @event, include: :area
   end
 
   def create

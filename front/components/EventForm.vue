@@ -11,7 +11,7 @@ v-container
       v-select(label="エリア" v-model="selectedArea" :items="areas" item-text="name" item-value="id")
   DateRangePicker(@updateDates="updateDates")
   v-btn(@click="moveEvent") 戻る
-  v-btn.pull-right(color="primary" @click="createEvent") {{ button_name }}
+  v-btn.pull-right(color="primary" @click="clickButton") {{ button_name }}
 </template>
 
 <script>
@@ -56,8 +56,8 @@ export default {
       axios.get('/events/' + this.eventId).then((res) => {
         if (res.data) {
           this.name = res.data.name
-          this.short_name = res.data.short_name
-          this.description = res.data.description
+          this.director = res.data.director
+          this.selectedArea = res.data.area.id
         }
       })
     }
@@ -72,15 +72,33 @@ export default {
     })
   },
   methods: {
-    createEvent () {
+    clickButton () {
       const startTerm = new Date(this.dates[0].replace('-', '/'))
       const endTerm = new Date(this.dates[1].replace('-', '/'))
+      if (this.formType === 'new') {
+        this.createEvent(startTerm, endTerm)
+      } else if (this.formType === 'edit') {
+        this.updateEvent(this.eventId, startTerm, endTerm)
+      }
+    },
+    createEvent (startTerm, endTerm) {
       const self = this
       axios.post('/events', { name: this.name, area_id: this.selectedArea, director: this.director, start_term: startTerm, end_term: endTerm }).then((res) => {
         self.$router.push('/events')
         self.toast({
           type: 'success',
           message: '登録が完了しました',
+          timeout: 2000
+        })
+      })
+    },
+    updateEvent (id, startTerm, endTerm) {
+      const self = this
+      axios.put('/events/' + id, { name: this.name, area_id: this.selectedArea, director: this.director, start_term: startTerm, end_term: endTerm }).then((res) => {
+        self.$router.push('/events')
+        self.toast({
+          type: 'success',
+          message: '更新が完了しました',
           timeout: 2000
         })
       })
