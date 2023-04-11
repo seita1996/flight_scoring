@@ -9,7 +9,7 @@ v-container
   v-row(align="center" justify="center")
     v-col(cols="12")
       v-select(label="エリア" v-model="selectedArea" :items="areas" item-text="name" item-value="id")
-  DateRangePicker(@updateDates="updateDates")
+  DateRangePicker(v-if="dateFlg" @updateDates="updateDates" :oldDates="dates")
   v-btn(@click="moveEvent") 戻る
   v-btn.pull-right(color="primary" @click="clickButton") {{ button_name }}
 </template>
@@ -39,7 +39,8 @@ export default {
       selectedArea: null,
       dates: [],
       areas: [],
-      button_name: ''
+      button_name: '',
+      dateFlg: false
     }
   },
   notifications: {
@@ -51,6 +52,8 @@ export default {
   mounted () {
     if (this.formType === 'new') {
       this.button_name = '登録'
+      this.dates = []
+      this.dateFlg = true
     } else if (this.formType === 'edit') {
       this.button_name = '更新'
       axios.get('/events/' + this.eventId).then((res) => {
@@ -58,6 +61,8 @@ export default {
           this.name = res.data.name
           this.director = res.data.director
           this.selectedArea = res.data.area.id
+          this.dates = [res.data.start_term.slice(0, 10), res.data.end_term.slice(0, 10)]
+          this.dateFlg = true
         }
       })
     }
