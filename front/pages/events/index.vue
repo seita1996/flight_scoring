@@ -3,9 +3,9 @@ v-container
   v-row(align="center" justify="center")
     v-col(cols="12")
       v-btn.pull-right(color="primary" @click="moveEventNew") 大会登録
-  v-data-table(:headers="fields" :items="events" :items-per-page="5" class="elevation-1")
-    template(v-slot:[`item.name`]="{ item }")
-      a(@click="moveEventPage(item.id)") {{ item.name }}
+  v-data-table(:headers="fields" :items="events" :items-per-page="5" class="elevation-1 pointer" @click:row="moveEventPage")
+    //- template(v-slot:[`item.name`]="{ item }")
+    //-   a(@click="moveEventPage(item.id)") {{ item.name }}
 </template>
 
 <script>
@@ -43,9 +43,8 @@ export default {
     moveEventNew () {
       this.$router.push('/events/new')
     },
-    moveEventPage (id) {
-      // this.$router.push({ path: `/events/${id}` })
-      this.$router.push({ name: 'events-id', params: { id } })
+    moveEventPage (row) {
+      this.$router.push({ name: 'events-id', params: { id: row.id } })
     },
     // 年月日形式に変換
     getFormatDate (datetime) {
@@ -60,5 +59,8 @@ export default {
 .pull-right {
   float: right;
   margin-bottom: 10px;
+}
+.pointer {
+  cursor: pointer;
 }
 </style>
